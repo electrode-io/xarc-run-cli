@@ -39,8 +39,8 @@ eval "$(xrun --completion=bash)"
 eval "$(xrun --completion=zsh)"
 ```
 
-[@xarc/run]: https://github.com/electrode-io/xarc-run
-[npm-image]: https://badge.fury.io/js/@xarc/run-cli.svg
+[@xarc/run]: https://www.npmjs.com/package/@xarc/run
+[npm-image]: https://badge.fury.io/js/%40xarc%2Frun-cli.svg
 [npm-url]: https://npmjs.org/package/@xarc/run-cli
 [daviddm-image]: https://david-dm.org/electrode-io/@xarc/run-cli/status.svg
 [daviddm-url]: https://david-dm.org/electrode-io/@xarc/run-cli

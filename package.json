@@ -5,7 +5,7 @@
   "main": "xrun.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jchip/xarc-run-cli.git"
+    "url": "https://github.com/electrode-io/xarc-run-cli.git"
   },
   "keywords": [
     "npm run",
@@ -27,16 +27,16 @@
     "xrun": "xrun.js"
   },
   "files": [
-    "srun.js",
+    "xrun.js",
     "completion"
   ],
   "scripts": {},
-  "author": "Joel Chen <joel123@gmail.com>",
+  "author": "Joel Chen <xchen@walmartlabs.com>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/jchip/xarc-run-cli/issues"
+    "url": "https://github.com/electrode-io/xarc-run-cli/issues"
   },
-  "homepage": "https://github.com/jchip/xarc-run-cli",
+  "homepage": "https://github.com/electrode-io/xarc-run-cli",
   "dependencies": {
     "require-at": "^1.0.0"
   }
