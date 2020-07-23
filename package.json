@@ -1,6 +1,6 @@
 {
   "name": "@xarc/run-cli",
-  "version": "0.1.3",
+  "version": "1.0.0",
   "description": "CLI invoker for @xarc/run enhanced npm run tool",
   "main": "xrun.js",
   "repository": {
