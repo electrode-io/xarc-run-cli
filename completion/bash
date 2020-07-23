@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Copied from gruntjs
+# grunt-cli
+# http://gruntjs.com/
+#
+# Copyright (c) 2016 Tyler Kellen, contributors
+# Licensed under the MIT license.
+# https://github.com/gruntjs/grunt/blob/master/LICENSE-MIT
+
+# Usage:
+#
+# To enable bash <tab> completion for grunt, add the following line (minus the
+# leading #, which is the bash comment character) to your ~/.bashrc file:
+#
+# eval "$(xrun --completion=bash)"
+
+# Enable bash autocompletion.
+function _xrun_completions() {
+  # The currently-being-completed word.
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  local compls=""
+  # get tasks.
+  # If starts with / then list full namespaces
+  if [[ "$cur" == /* ]]; then
+    compls=$(xrun -q -l -ff)
+  elif [[ "$cur" == -* ]]; then
+    compls=$(xrun --options)
+  else
+  # otherwise just the task names only
+    compls="$(xrun -q -l)"
+  fi
+  # Tell complete what stuff to show.
+  COMPREPLY=($(compgen -W "$compls" -- "$cur"))
+}
+
+complete -o default -F _xrun_completions xrun
