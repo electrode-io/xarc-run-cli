@@ -28,9 +28,12 @@
   },
   "files": [
     "xrun.js",
-    "completion"
+    "completion",
+    "check.js"
   ],
-  "scripts": {},
+  "scripts": {
+    "postinstall": "node check"
+  },
   "author": "Joel Chen <xchen@walmartlabs.com>",
   "license": "Apache-2.0",
   "bugs": {
@@ -38,6 +41,7 @@
   },
   "homepage": "https://github.com/electrode-io/xarc-run-cli",
   "dependencies": {
+    "is-installed-globally": "^0.3.2",
     "require-at": "^1.0.0"
   }
 }
