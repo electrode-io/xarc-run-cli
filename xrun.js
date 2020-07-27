@@ -6,15 +6,96 @@ const requireAt = require("require-at");
 const Path = require("path");
 const Fs = require("fs");
 
+function findRunners() {
+  const cwd = process.cwd().replace(/[\\/]/g, "/");
+
+  return ["@xarc/run", "xclap"].reduce((runners, p) => {
+    try {
+      const cwdRequire = requireAt(process.cwd());
+      const pkgPath = Path.dirname(cwdRequire.resolve(`${p}/package.json`));
+      runners[p] = {
+        path: pkgPath,
+        inCwd: pkgPath.replace(/[\\/]/g, "/").startsWith(cwd)
+      };
+    } catch (err) {
+      runners[p] = { path: false, inCwd: false, err };
+    }
+    return runners;
+  }, {});
+}
+
+function hasXclapTaskFile() {
+  return [".js", ".ts"].find(ext => Fs.existsSync(Path.resolve("xclap" + ext)));
+}
+
 function findXrunPath() {
-  try {
-    const cwdRequire = requireAt(process.cwd());
-    return Path.dirname(cwdRequire.resolve("@xarc/run/package.json"));
-  } catch (err) {
-    console.log("Cannot find the module @xarc/run at CWD", process.cwd());
-    console.log("Please install it with 'npm install --save-dev @xarc/run'");
-    if (err.code !== "MODULE_NOT_FOUND") {
-      console.log("\nActual Error", err);
+  const runners = findRunners();
+  const myRunnerName = "@xarc/run";
+
+  const xarcRun = runners[myRunnerName];
+  const xclap = runners.xclap;
+
+  const msgUseXclap = `The module xclap is detected in your project.  You probably should use 'npx clap' to invoke your task.`;
+  const msgUpdateXrun = `Please note that xclap has been renamed to ${myRunnerName}.  Please consider switching to it.`;
+  if (xarcRun.path) {
+    // @xarc/run coming from upper directories?
+    if (!xarcRun.inCwd) {
+      console.log(`
+The module ${myRunnerName} is detected _outside_ of your current working dir.  This is not typically expected.
+CWD: ${process.cwd()}
+${myRunnerName}: ${xarcRun.path}
+`);
+
+      if (xclap.path && xclap.inCwd) {
+        const xclapExt = hasXclapTaskFile();
+        if (xclapExt) {
+          // xclap file found, may need clap, but show update info for @xarc/run
+          console.log(`
+The file 'xclap${xclapExt}' is found in your project.
+${msgUseXclap}
+${msgUpdateXrun}
+`);
+          process.exit(1);
+        }
+
+        // xclap found but no xclap.js - show update info for @xarc/run
+        console.log(`
+${msgUseXclap}
+${msgUpdateXrun}
+`);
+      }
+    }
+    return xarcRun.path;
+  } else {
+    console.log(
+      `
+Cannot find the module ${myRunnerName} with require at CWD`,
+      process.cwd()
+    );
+
+    let xclapExt;
+    if (xclap.path) {
+      console.log(
+        `
+${msgUseXclap}
+${msgUpdateXrun}
+`
+      );
+    } else if ((xclapExt = hasXclapTaskFile())) {
+      console.log(`The file 'xclap${xclapExt}' is found in your project.
+You should rename it to 'xrun-tasks${xclapExt}' and update to '${myRunnerName}'
+${msgUpdateXrun}
+`);
+    } else {
+      console.log(
+        `Please double check you are in the right directory of your project.
+You may need install the module ${myRunnerName} with 'npm install --save-dev ${myRunnerName}'
+`
+      );
+    }
+
+    if (xarcRun.err.code !== "MODULE_NOT_FOUND") {
+      console.log("Actual Error", xarcRun.err);
     }
     process.exit(1);
   }
