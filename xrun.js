@@ -128,4 +128,11 @@ function checkCompletion() {
 }
 
 checkCompletion();
-require(Path.join(findXrunPath(), "cli/xrun"))();
+
+try {
+  // directly look for the xrun CLI bin in node_modules
+  require(Path.resolve("node_modules/.bin/xrun"));
+} catch {
+  // didn't work, try to find @xarc/run module
+  require(Path.join(findXrunPath(), "bin/xrun"));
+}
