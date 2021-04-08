@@ -129,10 +129,21 @@ function checkCompletion() {
 
 checkCompletion();
 
-try {
-  // directly look for the xrun CLI bin in node_modules
-  require(Path.resolve("node_modules/.bin/xrun"));
-} catch {
+function invoke() {
+  try {
+    // directly look for the xrun CLI bin in node_modules
+    const x = require.resolve(Path.resolve("node_modules/.bin/xrun"));
+    const y = requireAt(Path.dirname(x)).resolve("@xarc/run/bin/xrun");
+    if (y && y.startsWith(process.cwd())) {
+      require(y);
+      return;
+    }
+  } catch (err) {
+    //
+  }
+
   // didn't work, try to find @xarc/run module
   require(Path.join(findXrunPath(), "bin/xrun"));
 }
+
+invoke();
